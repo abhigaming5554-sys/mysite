@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>YOUR SYSTEM ACCESS...</title>
+
+<style>
+body {
+  margin: 0;
+  background: black;
+  color: #00ff00;
+  font-family: monospace;
+  overflow: hidden;
+}
+
+#hacker {
+  white-space: pre-line;
+  padding: 20px;
+  font-size: 18px;
+}
+
+#main {
+  display: none;
+  text-align: center;
+  color: white;
+  margin-top: 150px;
+  font-family: Arial;
+}
+
+h1 {
+  font-size: 40px;
+}
+
+p {
+  font-size: 20px;
+}
+
+/* blinking cursor */
+#hacker::after {
+  content: "|";
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+</style>
+
+</head>
+
+<body onclick="playMusic()">
+
+<div id="hacker"></div>
+
+<div id="main">
+  <h1>😎 SCREEN PER KAHI BHI TAP KARO AUR GANE KO ENJOY KRO</h1>
+  <p id="msg"></p>
+</div>
+
+<!-- 🎵 Music -->
+<audio id="bgmusic" loop>
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let lines = [
+  "Initializing system...",
+  "Connecting to secure server...",
+  "Decrypting files...",
+  "Bypassing firewall...",
+  "Injecting script...",
+  "Access Granted ✔"
+];
+
+let i = 0;
+let hackerDiv = document.getElementById("hacker");
+
+// typing animation
+function typing() {
+  if (i < lines.length) {
+    hackerDiv.innerHTML += lines[i] + "\\n";
+    i++;
+    setTimeout(typing, 900);
+  } else {
+    setTimeout(showMessage, 1000);
+  }
+}
+
+// show final message
+function showMessage() {
+  document.getElementById("hacker").style.display = "none";
+  document.getElementById("main").style.display = "block";
+
+  document.getElementById("msg").innerText =
+    "💌ये देखो पता था तेरी मां को चोदूं  मुझे पता था तू जरूर देखेगी/देखेगा निकल यहां से रण्डी की औलाद वरना बिना तेल के मारूंगा तेरे पूरे घर की मां की चू त .तेरी 🍌 अगर मुझे गलती से पता चल गया कि तूने इस मैसेज के बाद तूने कुछ मेरे बारे मैं उल्टा पुल्टा बोला 4 के चारों मरोगे 🤬 कसम तेरे बाप की 🤬 रण्डी की औलाद🔥";
+
+  alert("😜 CLICK OK , AUR AAGE BADO AUR BHI KUCHH KHAS HAI TERE LIYE ");
+}
+
+// 🎵 play music on click
+function playMusic() {
+  let music = document.getElementById("bgmusic");
+  music.play();
+}
+
+typing();
+</script>
+
+</body>
+</html>
