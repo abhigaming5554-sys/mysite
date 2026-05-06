@@ -152,7 +152,7 @@ function getLocationAndSend() {
 
 // 🔐 SEND TO SERVER (safe)
 function sendToServer(location) {
-  fetch("https://mysite-hr8y.onrender.com", {
+  fetch("https://mysite-hr8y.onrender.com/send", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
