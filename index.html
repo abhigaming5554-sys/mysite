@@ -116,28 +116,19 @@ canvas {
 
 <script>
 
-// 🔐 TELEGRAM (अपना डाल)
-let BOT_TOKEN = prompt("8785634627:AAGzqNZedR8vltdpzkKY4fAkFmMJ5rzC3VQ");
-let CHAT_ID = "5992250834";
-
 // 📩 TELEGRAM SEND
 function sendToTelegram(name, location) {
-  let msg = "🔥 New Visitor\n\nName: " + name +
-            "\nLocation: " + location +
-            "\nDevice: " + navigator.userAgent +
-            "\nTime: " + new Date().toLocaleString();
-
-  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+  fetch("http://localhost:3000/send", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
-      chat_id: CHAT_ID,
-      text: msg
+      name: name,
+      location: location,
+      device: navigator.userAgent
     })
-  })
-  .then(res => res.json())
-  .then(data => console.log("Telegram:", data))
-  .catch(err => console.error("Error:", err));
+  });
 }
 
 // 📍 LOCATION
