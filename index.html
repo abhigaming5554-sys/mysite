@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>YOUR SYSTEM ACCESS...</title>
+<title>System Access...</title>
 
 <style>
 body {
@@ -12,60 +12,154 @@ body {
   overflow: hidden;
 }
 
+/* overlay full screen */
+#overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+
+/* hacker text */
 #hacker {
   white-space: pre-line;
   padding: 20px;
   font-size: 18px;
 }
 
+/* final message */
 #main {
   display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   text-align: center;
   color: white;
-  margin-top: 150px;
   font-family: Arial;
 }
 
-h1 {
-  font-size: 40px;
+/* typing text */
+.typing {
+  border-right: 2px solid white;
+  white-space: nowrap;
+  overflow: hidden;
+  animation: typing 3s steps(30), blink 1s infinite;
 }
 
-p {
-  font-size: 20px;
-}
-
-/* blinking cursor */
-#hacker::after {
-  content: "|";
-  animation: blink 1s infinite;
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
 }
 
 @keyframes blink {
-  50% { opacity: 0; }
+  50% { border-color: transparent }
+}
+
+/* matrix */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+/* shake */
+.shake {
+  animation: shake 0.2s infinite;
+}
+
+@keyframes shake {
+  0% { transform: translate(3px,3px); }
+  25% { transform: translate(-3px,-3px); }
+  50% { transform: translate(3px,-3px); }
+  75% { transform: translate(-3px,3px); }
+  100% { transform: translate(3px,3px); }
+}
+
+/* error screen */
+#error {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: red;
+  color: white;
+  font-size: 30px;
+  text-align: center;
+  padding-top: 40vh;
+  z-index: 1000;
 }
 </style>
 
 </head>
 
-<body onclick="playMusic()">
+<body>
+
+<div id="overlay" onclick="startAll()"></div>
+<canvas id="matrix"></canvas>
 
 <div id="hacker"></div>
 
 <div id="main">
-  <h1>😎 SCREEN PER KAHI BHI TAP KARO AUR GANE KO ENJOY KRO</h1>
-  <p id="msg"></p>
+  <h1 id="title"></h1>
+  <p id="msg" class="typing"></p>
 </div>
 
-<!-- 🎵 Music -->
+<div id="error">❌ ERROR: NAME REQUIRED!</div>
+
 <audio id="bgmusic" loop>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <script>
+
+// 👇 naam pucho
+let userName = prompt("Enter your name 😎");
+
+// ❌ validation
+if (!userName || userName.trim() === "") {
+  
+  document.getElementById("error").style.display = "block";
+  document.body.style.background = "red";
+  document.body.classList.add("shake");
+
+  // vibration
+  if (navigator.vibrate) {
+    navigator.vibrate([500,200,500,200,500]);
+  }
+
+  throw new Error("Name not entered");
+}
+
+// start all effects
+function startAll() {
+  playMusic();
+  vibratePhone();
+  document.body.classList.add("shake");
+}
+
+// music
+function playMusic() {
+  document.getElementById("bgmusic").play();
+}
+
+// vibration
+function vibratePhone() {
+  if (navigator.vibrate) {
+    navigator.vibrate([200,100,200]);
+  }
+}
+
+// hacker lines
 let lines = [
   "Initializing system...",
-  "Connecting to secure server...",
-  "Decrypting files...",
+  "Tracking user: " + userName + "...",
+  "Accessing private data...",
   "Bypassing firewall...",
   "Injecting script...",
   "Access Granted ✔"
@@ -74,7 +168,6 @@ let lines = [
 let i = 0;
 let hackerDiv = document.getElementById("hacker");
 
-// typing animation
 function typing() {
   if (i < lines.length) {
     hackerDiv.innerHTML += lines[i] + "\\n";
@@ -85,24 +178,59 @@ function typing() {
   }
 }
 
-// show final message
+// final message
 function showMessage() {
   document.getElementById("hacker").style.display = "none";
   document.getElementById("main").style.display = "block";
 
+  document.getElementById("title").innerText =
+    "😎 Hello " + userName;
+
   document.getElementById("msg").innerText =
-    "💌ये देखो पता था तेरी मां को चोदूं  मुझे पता था तू जरूर देखेगी/देखेगा निकल यहां से रण्डी की औलाद वरना बिना तेल के मारूंगा तेरे पूरे घर की मां की चू त .तेरी 🍌 अगर मुझे गलती से पता चल गया कि तूने इस मैसेज के बाद तूने कुछ मेरे बारे मैं उल्टा पुल्टा बोला 4 के चारों मरोगे 🤬 कसम तेरे बाप की 🤬 रण्डी की औलाद🔥";
+    userName + ", tum ekdum special ho 💌🔥";
 
-  alert("😜 CLICK OK , AUR AAGE BADO AUR BHI KUCHH KHAS HAI TERE LIYE ");
-}
-
-// 🎵 play music on click
-function playMusic() {
-  let music = document.getElementById("bgmusic");
-  music.play();
+  alert("😈 " + userName + " SYSTEM BREACHED!");
 }
 
 typing();
+
+// matrix rain
+let canvas = document.getElementById("matrix");
+let ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+let letters = "01ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+letters = letters.split("");
+
+let fontSize = 14;
+let columns = canvas.width / fontSize;
+
+let drops = [];
+for (let x = 0; x < columns; x++)
+  drops[x] = 1;
+
+function draw() {
+  ctx.fillStyle = "rgba(0,0,0,0.05)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  ctx.fillStyle = "#0F0";
+  ctx.font = fontSize + "px monospace";
+
+  for (let i = 0; i < drops.length; i++) {
+    let text = letters[Math.floor(Math.random()*letters.length)];
+    ctx.fillText(text, i*fontSize, drops[i]*fontSize);
+
+    if (drops[i]*fontSize > canvas.height && Math.random()>0.975)
+      drops[i] = 0;
+
+    drops[i]++;
+  }
+}
+
+setInterval(draw, 33);
+
 </script>
 
 </body>
